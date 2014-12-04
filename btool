@@ -1,0 +1,39 @@
+#!/bin/sh
+## Android pack and unpack script for abootimg
+## By marduk191
+## email: marduk191@gmail.com
+while getopts ":upch" flags;
+do
+    case $flags in
+u)
+	mkdir IN
+	mkdir ramdisk
+        mv *.img ./IN/boot.img
+	cd IN
+	abootimg -x boot.img config.cfg kernel ramdisk.gz	
+	cd ../ramdisk/
+	gzip -dc ../IN/ramdisk.gz | cpio -i 
+        rm ../IN/ramdisk.gz
+	;;
+p)
+	./bin/mkbootfs ramdisk | gzip > ./IN/ramdisk.gz
+	cd IN
+	abootimg -u boot.img -r ramdisk.gz
+	;;
+c)
+	if test -d IN
+	then rm -rf IN
+	fi
+	if test -d ramdisk
+	then rm -rf ramdisk
+	fi
+	;;
+h)
+	echo "Copy your boot or recovery image to the base directory and type:"
+	echo "btool -u to unpack your image"
+	echo "btool -p pack your image back up"
+	echo "or btool -c to delete everything"
+	;;
+   esac
+done
+
