@@ -8,7 +8,7 @@ do
 u)
 	mkdir IN
 	mkdir ramdisk
-        mv *.img ./IN/boot.img
+        mv ./*.img ./IN/boot.img
 	cd IN
 	abootimg -x boot.img config.cfg kernel ramdisk.gz	
 	cd ../ramdisk/
